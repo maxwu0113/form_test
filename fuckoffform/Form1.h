@@ -158,9 +158,9 @@ namespace CppCLRWinformsProjekt {
 		{
 			pTheHardwareModel = theHardwareModelEx(
 #ifdef _WIN64
-				"C:\\Users\\EXOSOME\\source\\repos\\fuckoffform\\bin64"
+				"C:\\Users\\EXOSOME\\source\\repos\\form_test\\fuckoffform\\bin64"
 #else
-				"C:\\Users\\EXOSOME\\source\\repos\\fuckoffform\\bin"
+				"C:\\Users\\EXOSOME\\source\\repos\\form_test\\fuckoffform\\bin"
 #endif
 			);
 		}
