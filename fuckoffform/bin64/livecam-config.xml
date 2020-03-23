@@ -1,0 +1,39 @@
+<livecam-config>
+<!-- 
+	Live Camera Configuration File
+
+   	(c) 2015 Leica Microsystems CMS GmbH 
+
+         All Rights Reserved  
+
+-->
+	<predefines>
+%{
+
+  CONFIGURATOR_DATA_DIR = wrap __COMMON_APPDATA_DIR__ "\Leica Microsystems\Leica Hardware Configurator" endwrap
+
+  LIVECAM_LOGFOLDER = wrap CONFIGURATOR_DATA_DIR "\lgm\log" endwrap
+
+}%
+	</predefines>
+
+	<!-- enable logging -->
+	<logging file="%{LIVECAM_LOGFOLDER}%\livecam.log" />
+
+	<!-- emulator cameras  -->
+	<no-emulator enabled="true" /><!-- disable emulator -->
+
+	<!-- drivers section -->
+	<driver name="%{__CAMERA_MODULE_BIN_DIR__}%\CameraModule.dll" />
+	<driver name="livecam_ucapi.dll" />
+        <!-- optional exclude cameras -->
+        <exclude name="livecam_ucapi|DFC3000-G" />
+        <exclude name="livecam_ucapi|DFC7000-T" />
+        <exclude name="livecam_ucapi|DMC2900" />
+        <exclude name="livecam_ucapi|LMD-CC7000" />
+		<exclude name="livecam_ucapi|Basic-Cam" />
+		<exclude name="livecam_ucapi|Sequence-Cam" />
+		<exclude name="livecam_ucapi|SLS-Cam" />
+		<exclude name="livecam_ucapi|MLS-Cam" />
+
+</livecam-config>
