@@ -1,0 +1,64 @@
+/** 
+ ** Copyright (c) 2002-2007 Leica Microsystems - All Rights Reserved
+ ** 
+ ** Abstract Hardware Model - Error Types and Codes
+ **
+ **/
+#ifndef PUBLIC_AHM_ERRORS_H
+#define PUBLIC_AHM_ERRORS_H
+
+namespace ahm {
+
+	typedef enum eErrorClass{
+		ERROR_CLASS_UNDEF = -1,
+		ERROR_CLASS_GENERAL_ERROR,
+		ERROR_CLASS_COMMUNICATION_ERROR,
+		ERROR_CLASS_HARDWARE_ERROR,
+		ERROR_CLASS_INTERNAL_ERROR,
+		ERROR_CLASS_SNAPHSOTS_ERROR,
+		ERROR_CLASS_MAX
+	} EErrorClass;
+
+
+	typedef enum eErrorCode{
+		ERROR_CODE_UNDEF = -1,
+		ERROR_CODE_UNIT_NOT_INITIALIZED,
+		ERROR_CODE_IID_INVALID,
+		ERROR_CODE_PARAMETER_INVALID,
+		ERROR_CODE_HARDWARE_FAILURE,
+		ERROR_CODE_TIMEOUT,
+		ERROR_CODE_UNIT_NOT_DETECTED,
+		ERROR_CODE_UNSUPPORTED,
+		ERROR_CODE_ACCESS_INVALID,
+		ERROR_CODE_MANUAL_INTERACTION_NEEDED,
+		ERROR_CODE_LOADING_DRIVER_FAILED,
+		ERROR_CODE_OUT_OF_MEMORY,
+		ERROR_CODE_INVALID_OPERATION,
+
+		// A specified file (or folder) was not found.
+		ERROR_CODE_FILE_NOT_FOUND,
+		// A specified file could not be read.
+		ERROR_CODE_FILE_READ,
+		// A specified file could not be written.
+		ERROR_CODE_FILE_WRITE,
+		ERROR_CODE_CONNECTION_LOST, // communcation channel connection lost
+		ERROR_CODE_MAX,
+
+		ERROR_CODE_AUTOFOCUS_START = 0x3100,
+		ERROR_CODE_AUTOFOCUS_MAX =   0x31ff,
+		
+		// Image source specific error codes
+		ERROR_CODE_IMGSRC_START		= 0x3200,
+		ERROR_CODE_IMGSRC_MAX		=	0x32ff,
+
+		ERROR_CODE_UCAPI_START		= 0x4000,
+		ERROR_CODE_UCAPI_MAX		= 0x40ff
+
+	} EErrorCode;
+
+};
+
+
+
+#endif
+
