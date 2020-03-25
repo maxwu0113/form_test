@@ -13,7 +13,6 @@
 #include <list>
 #include <string>
 #include "class.h"
-#include <Windows.h>
 
 namespace CppCLRWinformsProjekt {
 
@@ -207,6 +206,7 @@ namespace CppCLRWinformsProjekt {
 					label1->Text = "still NOT initialized";
 				}
 				prepareContinousAcquire(*ucamera);
+				//acquireImage(*ucamera);
 			}
 		}
 	}
@@ -234,7 +234,6 @@ private: System::Void Form1_FormClosing(System::Object^ sender, System::Windows:
 			}
 		}
 	}
-
 	ahm::Unit* selectCamera(Unit* pUnit) {
 		CameraUnits cameraUnits;
 		findCameras(pUnit, cameraUnits);
@@ -264,27 +263,19 @@ private: System::Void Form1_FormClosing(System::Object^ sender, System::Windows:
 		}
 		return 0;
 	}
-
-	//save pixel data
-	iop::byte* pixel;
-	void getImagePixeldata(ucapi::Image& image)
-	{
-		image.lockPixelData();
-		pixel = image.pixelData();
-		image.unlockPixelData();
-	}
-
 	void acquireImage(Unit& camera)
 	{
 		try {
 			// Get the acquisition interfaces from the camera
 			ucapi::ImageAcquisition* pImageAcquisition = find_valid_itf<ucapi::ImageAcquisition>(&camera, ucapi::ImageAcquisition::IID);
 			if (!pImageAcquisition) {
+				cout << "cannot acquire image - image acquisition interface not available!" << endl;
 				return;
 			}
 			ucapi::AcquisitionInformation* pAcquisitionInfo = find_valid_itf<ucapi::AcquisitionInformation>(&camera, ucapi::AcquisitionInformation::IID);
 			if (!pAcquisitionInfo)
 			{
+				cout << "cannot acquire image - image acquisition information interface not available!" << endl;
 				return;
 			}
 			// Request exposure time values to be included in the image info
@@ -308,10 +299,10 @@ private: System::Void Form1_FormClosing(System::Object^ sender, System::Windows:
 
 			ucapi::CancellableImageAcquisitionContextResult* pAcquisitionContextObject = ucapi_client_tools::createCancellableAcquisitionContext(
 				[](ucapi::Image* pImage) {
-					getImagePixeldata(*pImage);
-
+					if (pImage)
+						displayImageInfo(std::cout, *pImage);
 					iop::float64 imageIndex = 0;
-					
+
 					//Get image sequence index if not available use fall back image increment
 					if (getImageInfoPropertyValue(*pImage, ucapi::IPROP_IMAGE_SEQUENCE_INDEX, imageIndex))
 					{
@@ -707,11 +698,6 @@ private: System::Void Form1_FormClosing(System::Object^ sender, System::Windows:
 			}
 		}
 		return bRet;
-	}
-
-	BITMAP converttobitmap(iop::byte* bdata) //還沒完成 
-	{
-
 	}
 
 	//Get value from a given PropertyValue.
