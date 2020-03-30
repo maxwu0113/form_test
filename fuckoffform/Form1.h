@@ -213,6 +213,20 @@ namespace CppCLRWinformsProjekt {
 private: System::Void Form1_FormClosing(System::Object^ sender, System::Windows::Forms::FormClosingEventArgs^ e) {
 
 }
+Bitmap^ reshapeimage(iop::byte* bdata) //還沒完成 
+{
+	Color reshapeimage;
+	Bitmap^ image;
+	for (int i = 0; i < 966; i++)
+	{
+		for (int j = 0; j < 1296; j++)
+		{
+			reshapeimage = Color::FromArgb(255, bdata[i * 1296 + j], bdata[i * 1296 + j], bdata[i * 1296 + j]);
+			image->SetPixel(j, i, reshapeimage);
+		}
+	}
+	return(image);
+}
 };
 	void findCameras(Unit* pUnit, CameraUnits& camerasFound, int depth)
 	{
@@ -324,7 +338,7 @@ private: System::Void Form1_FormClosing(System::Object^ sender, System::Windows:
 
 					//stop acquisition after 10 images
 					if (pCancelling != nullptr && nImageCount > 10) {
-						//pCancelling->setCancelled(true); //取消
+						pCancelling->setCancelled(true); //取消
 					}
 
 					pImage->dispose();
@@ -709,10 +723,7 @@ private: System::Void Form1_FormClosing(System::Object^ sender, System::Windows:
 		return bRet;
 	}
 
-	BITMAP converttobitmap(iop::byte* bdata) //還沒完成 
-	{
-
-	}
+	
 
 	//Get value from a given PropertyValue.
 	std::string toString(PropertyValue* pPropertyValue)
