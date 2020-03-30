@@ -13,6 +13,7 @@
 #include <list>
 #include <string>
 #include "class.h"
+#include <Windows.h>
 
 namespace CppCLRWinformsProjekt {
 
@@ -206,12 +207,25 @@ namespace CppCLRWinformsProjekt {
 					label1->Text = "still NOT initialized";
 				}
 				prepareContinousAcquire(*ucamera);
-				//acquireImage(*ucamera);
 			}
 		}
 	}
 private: System::Void Form1_FormClosing(System::Object^ sender, System::Windows::Forms::FormClosingEventArgs^ e) {
 
+}
+Bitmap^ reshapeimage(iop::byte* bdata) //還沒完成 
+{
+	Color reshapeimage;
+	Bitmap^ image;
+	for (int i = 0; i < 966; i++)
+	{
+		for (int j = 0; j < 1296; j++)
+		{
+			reshapeimage = Color::FromArgb(255, bdata[i * 1296 + j], bdata[i * 1296 + j], bdata[i * 1296 + j]);
+			image->SetPixel(j, i, reshapeimage);
+		}
+	}
+	return(image);
 }
 };
 	void findCameras(Unit* pUnit, CameraUnits& camerasFound, int depth)
@@ -234,6 +248,7 @@ private: System::Void Form1_FormClosing(System::Object^ sender, System::Windows:
 			}
 		}
 	}
+
 	ahm::Unit* selectCamera(Unit* pUnit) {
 		CameraUnits cameraUnits;
 		findCameras(pUnit, cameraUnits);
@@ -263,19 +278,27 @@ private: System::Void Form1_FormClosing(System::Object^ sender, System::Windows:
 		}
 		return 0;
 	}
+
+	//save pixel data
+	iop::byte* pixel;
+	void getImagePixeldata(ucapi::Image& image)
+	{
+		image.lockPixelData();
+		pixel = image.pixelData();
+		image.unlockPixelData();
+	}
+
 	void acquireImage(Unit& camera)
 	{
 		try {
 			// Get the acquisition interfaces from the camera
 			ucapi::ImageAcquisition* pImageAcquisition = find_valid_itf<ucapi::ImageAcquisition>(&camera, ucapi::ImageAcquisition::IID);
 			if (!pImageAcquisition) {
-				cout << "cannot acquire image - image acquisition interface not available!" << endl;
 				return;
 			}
 			ucapi::AcquisitionInformation* pAcquisitionInfo = find_valid_itf<ucapi::AcquisitionInformation>(&camera, ucapi::AcquisitionInformation::IID);
 			if (!pAcquisitionInfo)
 			{
-				cout << "cannot acquire image - image acquisition information interface not available!" << endl;
 				return;
 			}
 			// Request exposure time values to be included in the image info
@@ -299,10 +322,10 @@ private: System::Void Form1_FormClosing(System::Object^ sender, System::Windows:
 
 			ucapi::CancellableImageAcquisitionContextResult* pAcquisitionContextObject = ucapi_client_tools::createCancellableAcquisitionContext(
 				[](ucapi::Image* pImage) {
-					if (pImage)
-						displayImageInfo(std::cout, *pImage);
-					iop::float64 imageIndex = 0;
+					getImagePixeldata(*pImage);
 
+					iop::float64 imageIndex = 0;
+					
 					//Get image sequence index if not available use fall back image increment
 					if (getImageInfoPropertyValue(*pImage, ucapi::IPROP_IMAGE_SEQUENCE_INDEX, imageIndex))
 					{
@@ -315,7 +338,7 @@ private: System::Void Form1_FormClosing(System::Object^ sender, System::Windows:
 
 					//stop acquisition after 10 images
 					if (pCancelling != nullptr && nImageCount > 10) {
-						//pCancelling->setCancelled(true); //取消
+						pCancelling->setCancelled(true); //取消
 					}
 
 					pImage->dispose();
@@ -699,6 +722,8 @@ private: System::Void Form1_FormClosing(System::Object^ sender, System::Windows:
 		}
 		return bRet;
 	}
+
+	
 
 	//Get value from a given PropertyValue.
 	std::string toString(PropertyValue* pPropertyValue)
